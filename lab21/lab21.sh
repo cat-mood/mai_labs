@@ -48,7 +48,11 @@ for (( i=0; i<num_of_copies; i++ )); do
         (( suffix++ ))
     elif [[ "$suffix" =~ ^[A-Z]+$ ]]; then
         cp "$filepath" "$destination"/"${filename%.*}"_"$suffix"."${filename#*.}"
-        suffix="$(tr '[A-Y]' '[B-Z]' <<< "$suffix")"
+        last_letter="$(tr '[A-YZ]' '[B-ZA]' <<< "${suffix:$((${#suffix}-1)):1}")"
+        suffix=${suffix:0:$((${#suffix} - 1))}$last_letter
+        if [[ "$last_letter" == "A" ]]; then
+            suffix="$suffix"A
+        fi
     else
         die "Wrong suffix!"
     fi 
