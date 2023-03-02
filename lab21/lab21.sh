@@ -11,8 +11,8 @@ suffix=1
 if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
     echo "Using: mcp [ARGS] NUMBER_OF_COPIES SOURCE DIRECTORY"
     echo "ARGUMENTS:"
-    echo "-h, --help       display this help and exit"
-    echo "-s, --suffix     copy suffix will begin with this number or letter (only capital)"
+    echo "-h, --help                          display this help and exit"
+    echo "-s, --suffix [LETTER or NUMBER]     copy suffix will begin with this number or letter (only capital)"
     exit 0
 elif [[ "$1" == "-s" ]] || [[ "$1" == "--suffix" ]]; then
     shift
