@@ -1,0 +1,108 @@
+cat_mood@nuclear-box:~/programming$ df
+Файл.система   1K-блоков Использовано Доступно Использовано% Cмонтировано в
+tmpfs            1571532         1712  1569820            1% /run
+/dev/nvme0n1p9  37961112     19407372 16593192           54% /
+tmpfs            7857652        17092  7840560            1% /dev/shm
+tmpfs               5120            4     5116            1% /run/lock
+/dev/nvme0n1p1    200704        54262   146442           28% /boot/efi
+tmpfs            1571528           96  1571432            1% /run/user/1000
+cat_mood@nuclear-box:~/programming$ cmp test1/file1.txt test1/file2.txt
+test1/file1.txt test1/file2.txt различаются: байт 7, строка 1
+cat_mood@nuclear-box:~/programming$ cat test1/file1.txt 
+apple
+banana
+cherry
+raspberry
+cat_mood@nuclear-box:~/programming$ cat test1/file2.txt 
+banana
+blackberry
+pear
+raspberry
+cat_mood@nuclear-box:~/programming$ comm test1/file1.txt test1/file2.txt
+apple
+                banana
+        blackberry
+cherry
+        pear
+                raspberry
+cat_mood@nuclear-box:~/programming$ comm -23 test1/file1.txt test1/file2.txt
+apple
+cherry
+# `-2` означает, что нужно исключить строки из второго файла, а `-3` означает, что нужно исключить строки, которые присутствуют в обоих файлах
+cat_mood@nuclear-box:~/programming$ cat test1/file1.txt 
+artyom.kalinic@gmail.com
+yarik2005coolbrooo@yandex.ru
+vasya_obblomoff@gmail.com
+cocaine_boss777@mail.ru
+cat_mood@nuclear-box:~/programming$ grep "@gmail.com$" test1/file1.txt 
+artyom.kalinic@gmail.com
+vasya_obblomoff@gmail.com
+cat_mood@nuclear-box:~/programming$ cat test1/file1.txt 
+Jane
+Jane
+Bob
+John
+John
+cat_mood@nuclear-box:~/programming$ sort test1/file1.txt | uniq -u test1/file1.txt 
+Bob
+cat_mood@nuclear-box:~/programming$ cat test1/file2.txt 
+01.01.23    Apple   10  20.00
+17.03.23    Banana  2   34.00
+19.02.23    Apple   3   21.50
+cat_mood@nuclear-box:~/programming$ cut -d ';' -f 2 test1/file2.txt
+Apple
+Banana
+Apple
+cat_mood@nuclear-box:~/programming$ sort -k 2 test1/file1.txt > test1/file1_sorted.txt 
+cat_mood@nuclear-box:~/programming$ sort -k 2 test1/file2.txt > test1/file2_sorted.txt 
+cat_mood@nuclear-box:~/programming$ join -t ';' -1 2 -2 2 test1/file1_sorted.txt test1/file2_sorted.txt
+Mark;01.01.23;10;120.00;01.01.23;10;20.00
+Bob;17.03.23;10;34.00;17.03.23;2;34.00
+Ann;19.02.23;3;20.00;19.02.23;3;21.50
+cat_mood@nuclear-box:~/programming$ awk '{print $0}' test1/file1.txt 
+firstName       lastName        age     city       ID
+
+Thomas          Shelby          30      Rio        400
+Omega           Night           45      Ontario    600
+Wood            Tinker          54      Lisbon     N/A
+Giorgos         Georgiou        35      London     300
+Timmy           Turner          32      Berlin     N/A
+cat_mood@nuclear-box:~/programming$ awk '{print NR,$0}' test1/file1.txt 
+1 firstName       lastName        age     city       ID
+2 
+3 Thomas          Shelby          30      Rio        400
+4 Omega           Night           45      Ontario    600
+5 Wood            Tinker          54      Lisbon     N/A
+6 Giorgos         Georgiou        35      London     300
+7 Timmy           Turner          32      Berlin     N/A
+cat_mood@nuclear-box:~/programming$ awk '{print $1}' test1/file1.txt 
+firstName
+
+Thomas
+Omega
+Wood
+Giorgos
+Timmy
+cat_mood@nuclear-box:~/programming$ awk '{print $1,$3}' test1/file1.txt 
+firstName age
+ 
+Thomas 30
+Omega 45
+Wood 54
+Giorgos 35
+Timmy 32
+cat_mood@nuclear-box:~/programming$ awk '/^O/' test1/file1.txt 
+Omega           Night           45      Ontario    600
+cat_mood@nuclear-box:~/programming$ awk '! /0$/' test1/file1.txt 
+firstName       lastName        age     city       ID
+
+Wood            Tinker          54      Lisbon     N/A
+Timmy           Turner          32      Berlin     N/A
+cat_mood@nuclear-box:~/programming$ awk '/N\/A/{print $1,$2}' test1/file1.txt 
+Wood Tinker
+Timmy Turner
+cat_mood@nuclear-box:~/programming$ awk '$3 < 40 {print $1,$2}' test1/file1.txt 
+ 
+Thomas Shelby
+Giorgos Georgiou
+Timmy Turner
