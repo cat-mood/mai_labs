@@ -106,3 +106,25 @@ cat_mood@nuclear-box:~/programming$ awk '$3 < 40 {print $1,$2}' test1/file1.txt
 Thomas Shelby
 Giorgos Georgiou
 Timmy Turner
+cat_mood@nuclear-box:~/programming$ df -aH | awk '$2 > 0 {print $0}'
+df: /run/user/1000/doc: Операция не позволена
+Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
+udev             8,0G            0  8,0G            0% /dev
+tmpfs            1,7G         1,8M  1,7G            1% /run
+/dev/nvme0n1p9    39G          22G   16G           59% /
+tmpfs            8,1G         172M  7,9G            3% /dev/shm
+tmpfs            5,3M         4,1k  5,3M            1% /run/lock
+/dev/nvme0n1p1   206M          56M  150M           28% /boot/efi
+tmpfs            1,7G          95k  1,7G            1% /run/user/1000
+cat_mood@nuclear-box:~/programming$ du -sh ./
+1,6M    ./
+cat_mood@nuclear-box:~/programming$ wc -l mai_labs/lab21/lab21.sh 
+68 mai_labs/lab21/lab21.sh
+cat_mood@nuclear-box:~/programming$ find test1
+test1
+test1/file4.txt
+test1/file1.txt
+test1/file1_sorted.txt
+test1/file3.txt
+test1/file2.txt
+test1/file2_sorted.txt
