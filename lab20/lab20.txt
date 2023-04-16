@@ -128,3 +128,76 @@ test1/file1_sorted.txt
 test1/file3.txt
 test1/file2.txt
 test1/file2_sorted.txt
+at_mood@nuclear-box:~/programming/mai_labs$ find . -name "*.c"
+./kp6/kp6_2.c
+./kp6/kp6_1.c
+cat_mood@nuclear-box:~/programming/mai_labs$ find . -maxdepth 1 -name "*.c"
+cat_mood@nuclear-box:~/programming/mai_labs$ find . -maxdepth 2 -name "*.c"
+./kp6/kp6_2.c
+./kp6/kp6_1.c
+cat_mood@nuclear-box:~/programming/mai_labs$ find . -type d -name "lab21*"
+./lab21
+cat_mood@nuclear-box:~/programming/mai_labs$ find . -type f -name "lab21*"
+./lab21/lab21.sh
+cat_mood@nuclear-box:~/programming/mai_labs$ find . -type d -name "lab*" -exec ls "{}" \;
+lab20.txt
+lab21.sh
+cat_mood@nuclear-box:~/programming/mai_labs$ echo "Welcome home!" | sed 's/home/back/'
+Welcome back!
+cat_mood@nuclear-box:~/programming/mai_labs$ echo "Hello, World!" > lab20/hello.txt
+cat_mood@nuclear-box:~/programming/mai_labs$ sed -e 's/Hello/Goodbye/; s/World/everyone/' lab20/hello.txt 
+Goodbye, everyone!
+cat_mood@nuclear-box:~/programming/mai_labs$ echo "s/Hello/Goodbye/; s/World/everyone/" > lab20/command.txt
+cat_mood@nuclear-box:~/programming/mai_labs$ sed -f lab20/command.txt lab20/hello.txt 
+Goodbye, everyone!
+cat_mood@nuclear-box:~/programming/mai_labs$ cat lab20/hello.txt 
+Hello, World!
+Second line
+cat_mood@nuclear-box:~/programming/mai_labs$ sed '1d' lab20/hello.txt 
+Second line
+cat_mood@nuclear-box:~/programming/mai_labs$ echo "Another test" | sed 'i\First test '
+First test 
+Another test
+cat_mood@nuclear-box:~/programming/mai_labs$ echo "Another test" | sed 'a\First test '
+Another test
+First test 
+cat_mood@nuclear-box:~/programming/mai_labs$ sed '=' lab20/hello.txt 
+1
+Hello, World!
+2
+Second line
+cat_mood@nuclear-box:~/programming/mai_labs$ ls
+kp6  lab20  lab21  README.md
+cat_mood@nuclear-box:~/programming/mai_labs$ touch somefile.txt
+cat_mood@nuclear-box:~/programming/mai_labs$ ls
+kp6  lab20  lab21  README.md  somefile.txt
+cat_mood@nuclear-box:~/programming/mai_labs$ mktemp -d
+/tmp/tmp.DAw4wMRaKK
+cat_mood@nuclear-box:~/programming/mai_labs$ mktemp
+/tmp/tmp.hExRywTvHN
+cat_mood@nuclear-box:~/programming/mai_labs$ ls -l /tmp/ | grep "tmp*"
+drwx------ 2 cat_mood cat_mood 4096 апр 16 22:51 tmp.DAw4wMRaKK
+-rw------- 1 cat_mood cat_mood    0 апр 16 22:51 tmp.hExRywTvHN
+cat_mood@nuclear-box:~/programming/mai_labs$ gzip -k lab20/command.txt lab20/hello.txt lab21/lab21.sh
+cat_mood@nuclear-box:~/programming/mai_labs$ ls lab20/
+command.txt  command.txt.gz  hello.txt  hello.txt.gz  lab20.txt
+cat_mood@nuclear-box:~/programming/mai_labs$ ls lab21/
+lab21.sh  lab21.sh.gz
+cat_mood@nuclear-box:~/programming/mai_labs$ tar -cf arc.tar lab21/lab21.sh.gz lab20/*.gz
+cat_mood@nuclear-box:~/programming/mai_labs$ tar -tf arc.tar 
+lab21/lab21.sh.gz
+lab20/command.txt.gz
+lab20/hello.txt.gz
+cat_mood@nuclear-box:~/programming/mai_labs$ echo .cvsrc > .cvsrc
+cat_mood@nuclear-box:~/programming/mai_labs$ echo .cvsrc.new > .cvsrc.new
+cat_mood@nuclear-box:~/programming/mai_labs$ cat .cvsrc .cvsrc.new 
+.cvsrc
+.cvsrc.new
+cat_mood@nuclear-box:~/programming/mai_labs$ paste .cvsrc .cvsrc.new 
+.cvsrc  .cvsrc.new
+cat_mood@nuclear-box:~/programming/mai_labs$ paste -d : .cvsrc .cvsrc.new 
+.cvsrc:.cvsrc.new
+cat_mood@nuclear-box:~$ file arc.sh
+arc.sh: ASCII text
+cat_mood@nuclear-box:~$ file my_lab.tar 
+my_lab.tar: POSIX tar archive (GNU)
