@@ -10,7 +10,7 @@ static bool increase_buf(dbl_vec *v){
     if (new_cap < MIN_CAP){
         new_cap = MIN_CAP;
     }
-    double *tmp = realloc(v->buf, new_cap * sizeof(double));
+    int *tmp = realloc(v->buf, new_cap * sizeof(int));
     if (tmp == NULL){
         return false;
     }
@@ -28,7 +28,7 @@ static void decrease_buf(dbl_vec *v){
         new_cap = MIN_CAP;
     }
     if (new_cap < v->cap){
-        double* tmp = realloc(v->buf, new_cap * sizeof(double));
+        int* tmp = realloc(v->buf, new_cap * sizeof(int));
         if (tmp == NULL){
             return;
         }
@@ -63,7 +63,7 @@ bool set_size(dbl_vec *v, int new_size){
     }
     // больше чем 1 элемент, increase не гарантирует, что всё влезет
     int new_cap = new_size;
-    double *tmp = realloc(v->buf, new_cap * sizeof(double));
+    int *tmp = realloc(v->buf, new_cap * sizeof(int));
     if (tmp == NULL){
         return false;
     }
@@ -85,7 +85,7 @@ dbl_vec init(){
     v.cap = MIN_CAP;
     v.head = 0;
     v.size = 0;
-    v.buf = malloc(v.cap * sizeof(double));
+    v.buf = malloc(v.cap * sizeof(int));
     return v;
 }
 
@@ -95,7 +95,7 @@ void destroy(dbl_vec* v){
     free(v->buf);
 }
 
-bool push_back(dbl_vec *v, double val){
+bool push_back(dbl_vec *v, int val){
     if (!increase_buf(v)){
         return false;
     }
@@ -104,7 +104,7 @@ bool push_back(dbl_vec *v, double val){
     return true;
 }
 
-bool push_front(dbl_vec *v, double val){
+bool push_front(dbl_vec *v, int val){
     if (!increase_buf(v)){
         return false;
     }
@@ -114,15 +114,15 @@ bool push_front(dbl_vec *v, double val){
     return true;
 }
 
-double pop_back(dbl_vec *v){
-    double res = v->buf[(v->head + v->size - 1) % v->cap];
+int pop_back(dbl_vec *v){
+    int res = v->buf[(v->head + v->size - 1) % v->cap];
     v->size--;
     decrease_buf(v);
     return res;
 }
 
-double pop_front(dbl_vec *v){
-    double res = v->buf[v->head];
+int pop_front(dbl_vec *v){
+    int res = v->buf[v->head];
     v->size--;
     v->head = (v->head + 1) % v->cap;
     decrease_buf(v);
@@ -137,10 +137,10 @@ int get_size(dbl_vec *v){
     return v->size;
 }
 
-double get_el(dbl_vec *v, int idx){
+int get_el(dbl_vec *v, int idx){
     return v->buf[(v->head + idx) % v->cap];
 }
 
-void set_el(dbl_vec *v, int idx, double val){
+void set_el(dbl_vec *v, int idx, int val){
     v->buf[(v->head + idx) % v->cap] = val;
 }
