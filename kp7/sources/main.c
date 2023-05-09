@@ -16,7 +16,6 @@ bool input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
             column++;
             num = 0;
         } else if (c == '\n' || c == EOF) {
-            // если все нули, то можно в CIP -1 написать
             if (num != 0){
                 push_back(YE, num);
                 push_back(PI, column);
