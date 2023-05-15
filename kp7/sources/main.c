@@ -90,6 +90,34 @@ void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
     printf("width: %d\n", width);
 }
 
+int abs(int a) {
+    if (a < 0) {
+        return -a;
+    }
+    return a;
+}
+
+// return el's idx in PI or YE
+int abs_max(dbl_vec* YE) {
+    int max = 0, idx_max, preidx_max;
+    bool is_same_exist = false;
+    for (int i = 0; i < get_size(YE); i++) {
+        if (abs(get_el(YE, i)) > max) {
+            max = abs(get_el(YE, i));
+            idx_max = i;
+            is_same_exist = false;
+        } else if (abs(get_el(YE, i)) == max) {
+            preidx_max = idx_max;
+            idx_max = i;
+            is_same_exist = true;
+        }
+    }
+    if (is_same_exist) {
+        return preidx_max;
+    }
+    return idx_max;
+}
+
 int main(){
     dbl_vec CIP = init();
     dbl_vec PI = init();
@@ -112,7 +140,8 @@ int main(){
     }
 
     print_matr(&CIP, &PI, &YE, width);
-
+    printf("idx_max: %d\n", abs_max(&YE));
+    
     destroy(&CIP);
     destroy(&PI);
     destroy(&YE);
