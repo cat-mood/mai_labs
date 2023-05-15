@@ -2,8 +2,8 @@
 #include <ctype.h>
 #include "headers/dbl_vec.h"
 
-bool input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
-    int c = getchar();
+int input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
+    int width = 0, c = getchar();
     int num = 0, column = 0, not_zeros = 0;
     while (c != EOF){
         if (c == ' '){
@@ -21,17 +21,21 @@ bool input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
                 push_back(PI, column);
                 not_zeros++;
             }
-            if (not_zeros == 0) {
-                push_back(CIP, -1);
-            } else {
-                push_back(CIP, get_size(PI) - not_zeros);
-            }
+            // if (not_zeros == 0) {
+            //     push_back(CIP, -1);
+            // } else {
+            push_back(CIP, get_size(PI) - not_zeros);
+            // }
             not_zeros = 0;
+            column++;
+            if (column > width) {
+                width = column;
+            }
             column = 0;
             num = 0;
         } else if (!isdigit(c)){
             fprintf(stderr, "Not number was inputed!\n");
-            return false;
+            return -1;
         } else {
             num *= 10;
             num += c - '0';
@@ -39,14 +43,59 @@ bool input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
 
         c = getchar();
     }
-    return true;
+    return width;
+}
+
+void print_zeros(int n){
+    if (n == 0){
+        return;
+    }
+    for (int i = 0; i < n; i++){
+        printf("0 ");
+    }
+}
+
+void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
+    printf("Matrix:\n");
+    int idx_line = 0, column = 0;
+    for (int i = 0; i < get_size(PI); i++){
+        // printf("    DEBUG: i = %d  idx_line = %d    ", i, idx_line);
+        if (i == get_el(CIP, idx_line)){
+            if (column != width && i != 0){
+                print_zeros(width - column);
+            }
+            printf("\n");
+            idx_line++;
+            if (get_el(CIP, idx_line - 1) == get_el(CIP, idx_line)) {
+                print_zeros(width);
+                printf("\n");
+                idx_line++;
+            }
+            column = 0;
+        } 
+        // if (get_el(CIP, idx_line) == get_el(CIP, idx_line + 1)){
+        //     print_zeros(width);
+        //     printf("\n");
+        //     idx_line++;
+        //     column = 0;
+        // }
+        if (get_el(PI, i) > column) {
+            print_zeros(get_el(PI, i) - column);
+            column = get_el(PI, i);
+        }
+        printf("%d ", get_el(YE, i));
+        column++;
+    }
+    printf("\n");
+    printf("width: %d\n", width);
 }
 
 int main(){
     dbl_vec CIP = init();
     dbl_vec PI = init();
     dbl_vec YE = init();
-    if (!input_matr(&CIP, &PI, &YE)){
+    int width = input_matr(&CIP, &PI, &YE);
+    if (width == -1){
         return 1;
     }
     printf("CIP:\n");
@@ -61,6 +110,12 @@ int main(){
     for (int i = 0; i < get_size(&YE); i++){
         printf("%d\n", get_el(&YE, i));
     }
+
+    print_matr(&CIP, &PI, &YE, width);
+
+    destroy(&CIP);
+    destroy(&PI);
+    destroy(&YE);
 
     return 0;
 }
