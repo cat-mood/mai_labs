@@ -56,7 +56,6 @@ void print_zeros(int n){
 }
 
 void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
-    printf("Matrix:\n");
     int idx_line = 0, column = 0;
     for (int i = 0; i < get_size(PI); i++){
         // printf("    DEBUG: i = %d  idx_line = %d    ", i, idx_line);
@@ -86,8 +85,9 @@ void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
         printf("%d ", get_el(YE, i));
         column++;
     }
+    print_zeros(width - column);
     printf("\n");
-    printf("width: %d\n", width);
+    // printf("width: %d\n", width);
 }
 
 int abs(int a) {
@@ -118,6 +118,14 @@ int abs_max(dbl_vec* YE) {
     return idx_max;
 }
 
+void divide_column(dbl_vec* PI, dbl_vec* YE, int column, int val) {
+    for (int i = 0; i < get_size(PI); i++) {
+        if (get_el(PI, i) == column) {
+            set_el(YE, i, get_el(YE, i) / val);
+        }
+    }
+}
+
 int main(){
     dbl_vec CIP = init();
     dbl_vec PI = init();
@@ -139,8 +147,14 @@ int main(){
         printf("%d\n", get_el(&YE, i));
     }
 
+    printf("Matrix:\n");
     print_matr(&CIP, &PI, &YE, width);
-    printf("idx_max: %d\n", abs_max(&YE));
+    printf("\n");
+    int idx_max = abs_max(&YE);
+    int max_column = get_el(&PI, idx_max);
+    divide_column(&PI, &YE, max_column, get_el(&YE, idx_max));
+    printf("Divided matrix:\n");
+    print_matr(&CIP, &PI, &YE, width);
     
     destroy(&CIP);
     destroy(&PI);
