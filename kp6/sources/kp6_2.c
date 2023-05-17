@@ -18,20 +18,23 @@ int main(int argc, char* argv[]){
         fprintf(stderr, "Can't open file!\n");
         return 1;
     }
-    // int n;
-    // if (fread(&n, sizeof(int), 1, file) != 1) {
-    //     fprintf(stderr, "Read number of elems error!\n");
-    //     return 1;
-    // }
-    comp cur;
-    comp prev;
-    while (fread(&cur, sizeof(comp), 1, file) == 1){
-        // printf("DEBUG cur:    %s;%s;%d;%s;%d;%s\n", cur.surname, cur.proc, cur.cores, cur.video_type, cur.memory, cur.os_name);
-        // printf("DEBUG prev:    %s;%s;%d;%s;%d;%s\n", prev.surname, prev.proc, prev.cores, prev.video_type, prev.memory, prev.os_name);
-        if (is_same(cur, prev)){
-            printf("%s\n", cur.surname);
+    int n;
+    if (fread(&n, sizeof(int), 1, file) != 1) {
+        fprintf(stderr, "Read number of elems error!\n");
+        return 1;
+    }
+    fseek(file, sizeof(int), SEEK_SET);
+    comp c[n];
+    if (fread(c, sizeof(comp), n, file) != n) {
+        fprintf(stderr, "Read elems error\n");
+        return 1;
+    }
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if(is_same(c[i], c[j])) {
+                printf("%s\n", c[i].surname);
+            }
         }
-        prev = cur;
     }
     return 0;
 }

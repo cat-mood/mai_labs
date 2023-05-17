@@ -27,6 +27,7 @@ int main(int argc, char* argv[]){
     } while (chr != '\n');
     comp c;
     int counter = 0;
+    fseek(output, sizeof(int), SEEK_SET);
     while (fscanf(input, "%[^;];%[^;];%d;%[^;];%d;%[^;];\n", c.surname, c.proc, &c.cores, c.video_type, &c.memory, c.os_name) == 6){
         if (fwrite(&c, sizeof(comp), 1, output) != 1){
             fprintf(stderr, "Write error!\n");
@@ -34,11 +35,12 @@ int main(int argc, char* argv[]){
         }
         counter++;
     }
-    // fseek(output, 0, SEEK_SET);     // pointer to top of file
-    // if (fwrite(&counter, sizeof(int), 1, output) != 1) {
-    //     fprintf(stderr, "Write error!\n");
-    //     return 1;
-    // }
+    fseek(output, 0, SEEK_SET);     // pointer to top of file
+    if (fwrite(&counter, sizeof(int), 1, output) != 1) {
+        fprintf(stderr, "Write error!\n");
+        return 1;
+    }
+    printf("%d lines are written\n", counter);
     fclose(input);
     fclose(output);
 
