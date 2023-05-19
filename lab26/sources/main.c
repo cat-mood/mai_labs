@@ -3,9 +3,10 @@
 #include <ctype.h>
 #include "headers/int_vec.h"
 
-void delete_max(int_vec* deq) {
+int delete_max(int_vec* deq) {
     int el, max = INT_MIN;
     int_vec buf = init();
+    bool is_deleted = false;
     while (!is_empty(deq)) {
         el = pop_back(deq);
         if (el > max) {
@@ -15,10 +16,25 @@ void delete_max(int_vec* deq) {
     }
     while (!is_empty(&buf)) {
         el = pop_back(&buf);
-        if (el == max) {
+        if (el == max && !is_deleted) {
+            is_deleted = true;
             continue;
         }
         push_back(deq, el);
+    }
+    destroy(&buf);
+    return max;
+}
+
+void selection_sort(int_vec* deq) {
+    int_vec buf = init();
+    int val;
+    while (!is_empty(deq)) {
+        val = delete_max(deq);
+        push_back(&buf, val);
+    }
+    while (!is_empty(&buf)) {
+        push_front(deq, pop_back(&buf));
     }
     destroy(&buf);
 }
@@ -75,6 +91,9 @@ int main() {
     }
     delete_max(&deq);
     printf("Deleted max:\n");
+    print_deq(&deq);
+    selection_sort(&deq);
+    printf("Sorted:\n");
     print_deq(&deq);
     
     destroy(&deq);    
