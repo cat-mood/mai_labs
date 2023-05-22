@@ -23,18 +23,24 @@ int main(int argc, char* argv[]){
         fprintf(stderr, "Read number of elems error!\n");
         return 1;
     }
+    comp c1;
+    comp c2;
     fseek(file, sizeof(int), SEEK_SET);
-    comp c[n];
-    if (fread(c, sizeof(comp), n, file) != n) {
-        fprintf(stderr, "Read elems error\n");
-        return 1;
-    }
     for (int i = 0; i < n - 1; i++) {
+        if (fread(&c1, sizeof(comp), 1, file) != 1) {
+            fprintf(stderr, "Read elem error!\n");
+            return 1;
+        }
         for (int j = i + 1; j < n; j++) {
-            if(is_same(c[i], c[j])) {
-                printf("%s\n", c[i].surname);
+            if (fread(&c2, sizeof(comp), 1, file) != 1) {
+                fprintf(stderr, "Read elem error!\n");
+                return 1;
+            }
+            if (is_same(c1, c2)) {
+                printf("%s\n", c1.surname);
             }
         }
+        fseek(file, sizeof(int) + sizeof(comp) * i, SEEK_SET);
     }
     return 0;
 }
