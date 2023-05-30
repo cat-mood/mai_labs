@@ -89,9 +89,9 @@ int main() {
     if (!input_deq(&deq)) {
         return 1;
     }
-    delete_max(&deq);
-    printf("Deleted max:\n");
-    print_deq(&deq);
+    // delete_max(&deq);
+    // printf("Deleted max:\n");
+    // print_deq(&deq);
     selection_sort(&deq);
     printf("Sorted:\n");
     print_deq(&deq);
