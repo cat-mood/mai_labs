@@ -1,6 +1,6 @@
 #include <headers/my_str.h>
 
-my_str init() {
+my_str init_str() {
     my_str s;
     s.buf = malloc(sizeof(char) * MIN_CAP_STR);
     s.cap = MIN_CAP_STR;

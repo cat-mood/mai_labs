@@ -8,6 +8,6 @@ typedef struct {
     int size;
 } my_str;
 
-my_str init();
+my_str init_str();
 void add_char(my_str* s, char val);
 void destroy_str(my_str* s);

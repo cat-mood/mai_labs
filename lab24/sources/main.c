@@ -1,4 +1,5 @@
 #include <headers/int_vec.h>
+#include <headers/my_str.h>
 #include <stdio.h>
 #include <ctype.h>
 
