@@ -1,5 +1,4 @@
 #include "headers/int_vec.h"
-#include "headers/int_vec.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -23,12 +22,13 @@ int check_priority(char op) {
 }
 
 int_vec postfix() {
-    char c;
+    char c = getchar();
     int_vec opstack = init();
     int_vec list = init();
-    do {
-        c = getchar();
+    while (c != '\n') {
         if (c == ' ') {
+            // здесь будет обработка двузначных чисел
+            c = getchar();
             continue;
         } else if (c == '(') {
             push_back(&opstack, c);
@@ -45,17 +45,23 @@ int_vec postfix() {
                 push_back(&opstack, c);
             } else {
                 char buf = pop_back(&opstack);
-                while (check_priority(c) <= check_priority(buf)) {
+                while (check_priority(c) <= check_priority(buf) && !is_empty(&opstack)) {
                     push_back(&list, buf);
-                    if (!is_empty(&opstack)) {
-                        buf = pop_back(&opstack);
-                    }
+                    buf = pop_back(&opstack);
                 }
+                if (check_priority(c) <= check_priority(buf)) {
+                    push_back(&list, buf);
+                    printf("DEBUG: %c\n", buf);
+                } else {
+                    push_back(&opstack, buf);
+                }
+                push_back(&opstack, c);
             }
         } else if (isalpha(c) || isdigit(c)) {
             push_back(&list, c);
         }
-    } while (c != '\n');
+        c = getchar();
+    }
     while (!is_empty(&opstack)) {
         push_back(&list, pop_back(&opstack));
     }
@@ -63,6 +69,16 @@ int_vec postfix() {
     return list;
 }
 
+void print_vec(int_vec* v) {
+    for (int i = 0; i < get_size(v); i++) {
+        putchar(get_el(v, i));
+    }
+    putchar('\n');
+}
+
 int main() {
-    
+    int_vec post = postfix();
+    print_vec(&post);
+
+    return 0;
 }
