@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(kp7)
+project(lab23)
 
 set(SOURCES sources/main.c sources/tree.c)
 
