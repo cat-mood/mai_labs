@@ -22,23 +22,22 @@ int check_priority(char op) {
 }
 
 int_vec postfix() {
-    char c = getchar();
+    char c;
     int_vec opstack = init();
     int_vec list = init();
-    while (c != '\n') {
-        if (c == ' ') {
-            // здесь будет обработка двузначных чисел
-            c = getchar();
-            continue;
-        } else if (c == '(') {
+    do {
+        c = getchar();
+        if (c == '(') {
             push_back(&opstack, c);
         } else if (c == ')') {
             char buf = pop_back(&opstack);
             while (buf != '(') {
+                push_back(&list, ' ');
                 push_back(&list, buf);
                 buf = pop_back(&opstack);
             }
         } else if (is_op(c)) {
+            push_back(&list, ' ');
             if (is_empty(&opstack)) {
                 push_back(&opstack, c);
             } else if (c == '^'){
@@ -47,10 +46,12 @@ int_vec postfix() {
                 char buf = pop_back(&opstack);
                 while (check_priority(c) <= check_priority(buf) && !is_empty(&opstack)) {
                     push_back(&list, buf);
+                    push_back(&list, ' ');
                     buf = pop_back(&opstack);
                 }
                 if (check_priority(c) <= check_priority(buf)) {
                     push_back(&list, buf);
+                    push_back(&list, ' ');
                     printf("DEBUG: %c\n", buf);
                 } else {
                     push_back(&opstack, buf);
@@ -59,10 +60,14 @@ int_vec postfix() {
             }
         } else if (isalpha(c) || isdigit(c)) {
             push_back(&list, c);
+        } else if (c == '\n') {
+            break;
+        } else if (c == ' ') {
+            continue;
         }
-        c = getchar();
-    }
+    } while (c != '\n');
     while (!is_empty(&opstack)) {
+        push_back(&list, ' ');
         push_back(&list, pop_back(&opstack));
     }
     destroy(&opstack);
