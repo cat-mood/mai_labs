@@ -2,8 +2,18 @@
 #include <ctype.h>
 #include "headers/dbl_vec.h"
 
-int input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
-    int width = 0, c = getchar();
+typedef struct {
+    dbl_vec* CIP;   // idx of first el in PI and YE
+    dbl_vec* PI;    // numbers of column
+    dbl_vec* YE;    // numbers
+    int width;  // number of columns
+    int lines;
+} matrix;
+
+void input_matr(matrix* m){
+    m->width = 0;
+    m->lines = 0;
+    int c = getchar();
     int num = 0, column = 0, not_zeros = 0;
     bool is_negative = false;
     while (c != EOF){
@@ -12,8 +22,8 @@ int input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
                 if (is_negative) {
                     num *= -1;
                 }
-                push_back(YE, num);
-                push_back(PI, column);
+                push_back(m->YE, num);
+                push_back(m->PI, column);
                 not_zeros++;
             }
             // как-то надо определить первый элекмент в линии: длина всего вектора PI - количество элементов в текущей строке
@@ -25,24 +35,26 @@ int input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
                 if (is_negative) {
                     num *= -1;
                 }
-                push_back(YE, num);
-                push_back(PI, column);
+                push_back(m->YE, num);
+                push_back(m->PI, column);
                 not_zeros++;
             }
-            push_back(CIP, get_size(PI) - not_zeros);
+            push_back(m->CIP, get_size(m->PI) - not_zeros);
             not_zeros = 0;
             column++;
-            if (column > width) {
-                width = column;
+            if (column > m->width) {
+                m->width = column;
             }
             column = 0;
             num = 0;
             is_negative = false;
+            m->lines++;
         } else if (c == '-') {
             is_negative = true;
         } else if (!isdigit(c)){
             fprintf(stderr, "Not number was inputed!\n");
-            return -1;
+            m->width = -1;
+            return;
         } else {
             num *= 10;
             num += c - '0';
@@ -50,7 +62,6 @@ int input_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE){
 
         c = getchar();
     }
-    return width;
 }
 
 void print_zeros(int n){
@@ -62,18 +73,18 @@ void print_zeros(int n){
     }
 }
 
-void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
+void print_matr(matrix m){
     int idx_line = 0, column = 0;
-    for (int i = 0; i < get_size(PI); i++){
+    for (int i = 0; i < get_size(m.PI); i++){
         // printf("    DEBUG: i = %d  idx_line = %d    ", i, idx_line);
-        if (i == get_el(CIP, idx_line)){
-            if (column != width && i != 0){
-                print_zeros(width - column);
+        if (i == get_el(m.CIP, idx_line)){
+            if (column != m.width && i != 0){
+                print_zeros(m.width - column);
             }
             printf("\n");
             idx_line++;
-            if (get_el(CIP, idx_line - 1) == get_el(CIP, idx_line)) {
-                print_zeros(width);
+            if (get_el(m.CIP, idx_line - 1) == get_el(m.CIP, idx_line)) {
+                print_zeros(m.width);
                 printf("\n");
                 idx_line++;
             }
@@ -85,14 +96,19 @@ void print_matr(dbl_vec* CIP, dbl_vec* PI, dbl_vec* YE, int width){
         //     idx_line++;
         //     column = 0;
         // }
-        if (get_el(PI, i) > column) {
-            print_zeros(get_el(PI, i) - column);
-            column = get_el(PI, i);
+        if (get_el(m.PI, i) > column) {
+            print_zeros(get_el(m.PI, i) - column);
+            column = get_el(m.PI, i);
         }
-        printf("%d ", get_el(YE, i));
+        printf("%d ", get_el(m.YE, i));
         column++;
     }
-    print_zeros(width - column);
+    print_zeros(m.width - column);
+    printf("\n");
+    for (int i = 0; i < m.lines - idx_line; i++) {
+        print_zeros(m.width);
+        printf("\n");
+    }
     printf("\n");
     // printf("width: %d\n", width);
 }
@@ -105,16 +121,20 @@ int abs(int a) {
 }
 
 // return el's idx in PI or YE
-int abs_max(dbl_vec* YE) {
+int abs_max(matrix m) {
     int max = 0, idx_max, preidx_max;
     bool is_same_exist = false;
-    for (int i = 0; i < get_size(YE); i++) {
-        if (abs(get_el(YE, i)) > max) {
-            max = abs(get_el(YE, i));
+    for (int i = 0; i < get_size(m.YE); i++) {
+        if (abs(get_el(m.YE, i)) > max) {
+            max = abs(get_el(m.YE, i));
             idx_max = i;
             is_same_exist = false;
-        } else if (abs(get_el(YE, i)) == max) {
-            preidx_max = idx_max;
+        } else if (abs(get_el(m.YE, i)) == max) {
+            if (get_el(m.PI, i) > get_el(m.PI, idx_max)) {
+                preidx_max = idx_max;
+            } else {
+                preidx_max = i;
+            }
             idx_max = i;
             is_same_exist = true;
         }
@@ -125,49 +145,60 @@ int abs_max(dbl_vec* YE) {
     return idx_max;
 }
 
-void divide_column(dbl_vec* PI, dbl_vec* YE, int column, int val) {
-    for (int i = 0; i < get_size(PI); i++) {
-        if (get_el(PI, i) == column) {
-            set_el(YE, i, get_el(YE, i) / val);
+// void clean_zeros(matrix m) {
+//     for (int i = 0; i < get_size(m.YE); i++) {
+//         if (get_el(m.YE, i) == 0) {
+
+//         }
+//     }
+// }
+
+void divide_column(matrix m, int column, int val) {
+    for (int i = 0; i < get_size(m.PI); i++) {
+        if (get_el(m.PI, i) == column) {
+            set_el(m.YE, i, get_el(m.YE, i) / val);
         }
     }
 }
 
+
 int main(){
+    matrix m;
     dbl_vec CIP = init();
     dbl_vec PI = init();
     dbl_vec YE = init();
-    int width = input_matr(&CIP, &PI, &YE);
-    if (width == -1){
+    m.CIP = &CIP;
+    m.PI = &PI;
+    m.YE = &YE;
+    input_matr(&m);
+    if (m.width == -1){
         return 1;
     }
     printf("CIP:\n");
-    for (int i = 0; i < get_size(&CIP); i++){
+    for (int i = 0; i < get_size(m.CIP); i++){
         printf("%d\n", get_el(&CIP, i));
     }
     printf("PI:\n");
-    for (int i = 0; i < get_size(&PI); i++){
+    for (int i = 0; i < get_size(m.PI); i++){
         printf("%d\n", get_el(&PI, i));
     }
     printf("YE:\n");
-    for (int i = 0; i < get_size(&YE); i++){
+    for (int i = 0; i < get_size(m.YE); i++){
         printf("%d\n", get_el(&YE, i));
     }
 
     printf("Matrix:\n");
-    print_matr(&CIP, &PI, &YE, width);
+    print_matr(m);
     printf("\n");
-    int idx_max = abs_max(&YE);
-    int max_column = get_el(&PI, idx_max);
-    divide_column(&PI, &YE, max_column, get_el(&YE, idx_max));
+    int idx_max = abs_max(m);
+    int max_column = get_el(m.PI, idx_max);
+    divide_column(m, max_column, get_el(m.YE, idx_max));
     printf("Divided matrix:\n");
-    print_matr(&CIP, &PI, &YE, width);
+    print_matr(m);
     
-    destroy(&CIP);
-    destroy(&PI);
-    destroy(&YE);
+    destroy(m.CIP);
+    destroy(m.PI);
+    destroy(m.YE);
 
     return 0;
 }
-
-// векторы объединить в структуру + width + количество строк. функция очистки от нулей матрицы после деления
