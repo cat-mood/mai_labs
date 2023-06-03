@@ -1,1 +1,0 @@
-/usr/bin/cc  -pedantic -std=c99 -Wall CMakeFiles/kp8.dir/sources/main.c.o CMakeFiles/kp8.dir/sources/iterator.c.o CMakeFiles/kp8.dir/sources/list.c.o -o kp8 

@@ -1,3 +1,0 @@
-/home/cat_mood/programming/mai_labs/kp8/build/CMakeFiles/kp8.dir
-/home/cat_mood/programming/mai_labs/kp8/build/CMakeFiles/edit_cache.dir
-/home/cat_mood/programming/mai_labs/kp8/build/CMakeFiles/rebuild_cache.dir
