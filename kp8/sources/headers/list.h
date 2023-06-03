@@ -18,6 +18,3 @@ typedef struct {
 
 list new_list();
 void destroy_list(list* l);
-bool add_el(iter* it, uint el);
-void delete_el(iter it);
-void print_list(list* l);
