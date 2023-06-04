@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "headers/key.h"
 
 int main(int argc, char* argv[]){
     if (argc != 5){
@@ -39,10 +40,10 @@ int main(int argc, char* argv[]){
         fprintf(stderr, "Can't create output file!\n");
         return 1;
     }
-    char key[4];
+    key k;
     counter = 0;
-    while (fscanf(input, "%s\n", key) == 1){
-        if (fwrite(key, sizeof(key), 1, output) != 1){
+    while (fscanf(input, "%d%c\n", &k.num, &k.letter) == 2){
+        if (fwrite(&k, sizeof(key), 1, output) != 1){
             fprintf(stderr, "Write error!\n");
             return 1;
         }
