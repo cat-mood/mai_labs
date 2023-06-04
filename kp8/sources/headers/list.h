@@ -18,3 +18,4 @@ typedef struct {
 
 list new_list();
 void destroy_list(list* l);
+bool is_list_empty(list* l);

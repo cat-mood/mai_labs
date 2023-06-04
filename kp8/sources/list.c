@@ -18,3 +18,7 @@ void destroy_list(list* l) {
         free(cur);
     }
 }
+
+bool is_list_empty(list* l) {
+    return l->size == 0;
+}

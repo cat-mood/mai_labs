@@ -5,14 +5,18 @@
 // delete elements in range from start to end (start <= n < end)
 void delete_in_range(list* l, uint start, uint end) {
     iter it = iter_begin(l);
-    iter_inc(&it);
+    bool is_first_deleted = false;
     do {
-        if (start <= iter_get_val(&it) && iter_get_val(&it) < end) {
+        if (!is_list_empty(l) && start <= iter_get_val(&it) && iter_get_val(&it) < end) {
             delete_el(&it);
+            if (iter_eq(it, iter_begin(l))) {
+                is_first_deleted = true;
+            }
         } else {
             iter_inc(&it);
+            is_first_deleted = false;
         }
-    } while (!iter_eq(it, iter_begin(l)));
+    } while (!iter_eq(it, iter_begin(l)) || is_first_deleted);
 }
 
 int main() {
