@@ -8,8 +8,12 @@ iter iter_begin(list* l) {
     return i;
 }
 
-
 bool iter_eq(iter it1, iter it2) {
+    if (it1.prev == NULL && it2.prev == NULL) {
+        return true;
+    } else if (it1.prev == NULL || it2.prev == NULL) {
+        return false;
+    }
     return it1.prev->next == it2.prev->next;
 }
 
@@ -52,27 +56,36 @@ void add_el(iter* it, uint el) {
 }
 
 void delete_el(iter* it) {
+    if (it->prev == NULL) {
+        return;
+    }
     node* elem;
     elem = it->prev->next;
     if (it->prev->next == it->lst->first) {   // when delete in the begin
-        it->lst->first = it->lst->first->next;
         if (it->lst->first == it->lst->last) {  // when the list has only one element
             it->lst->first = NULL;
-        }
-        if (it->lst->first == NULL) {     // when the list has no elements
             it->lst->last = NULL;
+            it->prev = NULL;
+        } else {
+            it->lst->first = it->lst->first->next;
+            it->lst->last->next = it->lst->first;
         }
-        it->lst->last->next = it->lst->first;
     } else if (it->prev->next == it->lst->last) {    // when delete in the end
         it->prev->next = it->lst->first;
+        it->lst->last = it->prev;
     } else {
         it->prev->next = it->prev->next->next;
     }
     free(elem);
+    it->lst->size--;
 }
 
 void print_list(list* l) {
     iter it = iter_begin(l);
+    if (it.prev == NULL) {
+        printf("Empty\n");
+        return;
+    }
     do {
         printf("%d ", iter_get_val(&it));
         iter_inc(&it);

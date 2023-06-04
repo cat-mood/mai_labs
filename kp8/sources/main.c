@@ -5,6 +5,7 @@
 // delete elements in range from start to end (start <= n < end)
 void delete_in_range(list* l, uint start, uint end) {
     iter it = iter_begin(l);
+    iter_inc(&it);
     do {
         if (start <= iter_get_val(&it) && iter_get_val(&it) < end) {
             delete_el(&it);
@@ -35,6 +36,8 @@ int main() {
     scanf("%u", &start);
     scanf("%u", &end);
     delete_in_range(&l, start, end);
+    printf("List:\n");
+    print_list(&l);
     destroy_list(&l);
 
     return 0;

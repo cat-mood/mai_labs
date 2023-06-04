@@ -11,11 +11,10 @@ list new_list() {
 
 void destroy_list(list* l) {
     node* cur = l->first;
-    node* next;
+    node* next = cur;
     for (int i = 0; i < l->size; i++) {
         cur = next;
         next = cur->next;
         free(cur);
     }
 }
-
