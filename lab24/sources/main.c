@@ -1,4 +1,5 @@
 #include "headers/int_vec.h"
+#include "headers/tree.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -81,9 +82,21 @@ void print_vec(int_vec* v) {
     putchar('\n');
 }
 
+tree postfix_to_tree(int_vec* post) {
+    if (is_empty(post)) {
+        return empty_tree();
+    }
+    int root = pop_back(post);
+    tree right = postfix_to_tree(post);
+    tree left = postfix_to_tree(post);
+    return build_tree(root, left, right);
+}
+
 int main() {
     int_vec post = postfix();
     print_vec(&post);
-
+    tree expr = postfix_to_tree(&post);
+    print_tree(expr);
+    destroy(&post);
     return 0;
 }
