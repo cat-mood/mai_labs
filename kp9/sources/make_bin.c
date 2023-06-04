@@ -42,12 +42,18 @@ int main(int argc, char* argv[]){
     }
     key k;
     counter = 0;
+    fseek(output, sizeof(int), SEEK_SET);
     while (fscanf(input, "%d%c\n", &k.num, &k.letter) == 2){
         if (fwrite(&k, sizeof(key), 1, output) != 1){
             fprintf(stderr, "Write error!\n");
             return 1;
         }
         counter++;
+    }
+    fseek(output, 0, SEEK_SET);
+    if (fwrite(&counter, sizeof(int), 1, output) != 1){
+        fprintf(stderr, "Write error!\n");
+        return 1;
     }
     printf("%d lines are written from %s\n", counter, argv[3]);
     fclose(input);
