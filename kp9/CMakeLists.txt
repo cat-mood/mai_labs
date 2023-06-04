@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(kp8)
+project(kp9)
 
 set(SOURCES sources/main.c sources/key.c)
 

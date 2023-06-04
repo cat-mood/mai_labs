@@ -10,11 +10,11 @@ int main(int argc, char* argv[]){
     FILE* input = fopen(argv[1], "r");
     FILE* output = fopen(argv[2], "wb");
     if (input == NULL){
-        fprintf(stderr, "Can't open input file!\n");
+        fprintf(stderr, "Can't open the first input file!\n");
         return 1;
     }
     if (output == NULL){
-        fprintf(stderr, "Can't create output file!\n");
+        fprintf(stderr, "Can't create the first output file!\n");
         return 1;
     }
     char line[99];
@@ -33,11 +33,11 @@ int main(int argc, char* argv[]){
     input = fopen(argv[3], "r");
     output = fopen(argv[4], "wb");
     if (input == NULL){
-        fprintf(stderr, "Can't open input file!\n");
+        fprintf(stderr, "Can't open the second input file!\n");
         return 1;
     }
     if (output == NULL){
-        fprintf(stderr, "Can't create output file!\n");
+        fprintf(stderr, "Can't create the second output file!\n");
         return 1;
     }
     key k;
