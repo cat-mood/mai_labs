@@ -51,19 +51,43 @@ void print_art(FILE* art) {
     }
 }
 
+key get_key() {
+    key k;
+    scanf("%d%c", &k.num, &k.letter);
+    return k;
+}
+
+int binary_search(key k, int n, map* m) {
+    int mid = n / 2;
+    int low = 0, high = n - 1;
+    while (keycmp(m[mid].k, k) != 0 && low <= high) {
+        if (keycmp(k, m[mid].k) > 0) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+        mid = (low + high) / 2;
+    }
+    if (low > high) {
+        return -1;
+    } else {
+        return low;
+    }
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 3){
         fprintf(stderr, "Wrong number of args!\n");
         return 1;
     }
-    FILE* keys = fopen(argv[1], "rb");
-    if (keys == NULL) {
-        fprintf(stderr, "Can't open the first file!");
-        return 2;
-    }
-    FILE* art = fopen(argv[2], "rb");
+    FILE* art = fopen(argv[1], "rb");
     if (art == NULL) {
         fprintf(stderr, "Can't open the second file!");
+        return 2;
+    }
+    FILE* keys = fopen(argv[2], "rb");
+    if (keys == NULL) {
+        fprintf(stderr, "Can't open the first file!");
         return 2;
     }
     int n;
@@ -81,11 +105,21 @@ int main(int argc, char* argv[]) {
         return 4;
     }
     fclose(keys);
+    fclose(art);
     shell_sort(n, m);
     for (int i = 0; i < n; i++) {
         printf("%s\n", m[i].val);
     }
-    fclose(art);
+    while (true) {
+        printf("Enter key:\n");
+        key user = get_key();
+        int idx = binary_search(user, n, m);
+        if (idx < 0) {
+            printf("Key not found!\n");
+        } else {
+            printf("%s\n", m[idx].val);
+        }
+    }
 
     return 0;
 }
