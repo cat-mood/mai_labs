@@ -43,11 +43,18 @@ void shell_sort(int n, map* m) {
     }
 }
 
-void print_art(FILE* art) {
+void _print_art(FILE* art) {
     fseek(art, 0, SEEK_SET);
     char line[99];
     while (fread(line, sizeof(line), 1, art) == 1) {
         printf("%s\n", line);
+    }
+}
+
+void print_art(int n, map* m) {
+    for (int i = 0; i < n; i++) {
+        printf("%d%c ", m[i].k.num, m[i].k.letter);
+        printf("%s\n", m[i].val);
     }
 }
 
@@ -71,7 +78,7 @@ int binary_search(key k, int n, map* m) {
     if (low > high) {
         return -1;
     } else {
-        return low;
+        return mid;
     }
 }
 
@@ -106,10 +113,10 @@ int main(int argc, char* argv[]) {
     }
     fclose(keys);
     fclose(art);
+    print_art(n, m);
     shell_sort(n, m);
-    for (int i = 0; i < n; i++) {
-        printf("%s\n", m[i].val);
-    }
+    printf("\n");
+    print_art(n, m);
     while (true) {
         printf("Enter key:\n");
         key user = get_key();
