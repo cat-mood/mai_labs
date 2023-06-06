@@ -1,8 +1,8 @@
 #include <stdlib.h>
-#include "headers/int_vec.h"
+#include "headers/token_vec.h"
 #define MIN_CAP 32
 
-static bool increase_buf(int_vec *v){
+static bool increase_buf(token_vec *v){
     if (v->size * 2 <= v->cap){
         return true;
     }
@@ -10,7 +10,7 @@ static bool increase_buf(int_vec *v){
     if (new_cap < MIN_CAP){
         new_cap = MIN_CAP;
     }
-    int *tmp = realloc(v->buf, new_cap * sizeof(int));
+    token *tmp = realloc(v->buf, new_cap * sizeof(token));
     if (tmp == NULL){
         return false;
     }
@@ -19,7 +19,7 @@ static bool increase_buf(int_vec *v){
     return true;
 }
 
-static void decrease_buf(int_vec *v){
+static void decrease_buf(token_vec *v){
     if (v->size >= v->cap / 4){
         return;
     }
@@ -28,7 +28,7 @@ static void decrease_buf(int_vec *v){
         new_cap = MIN_CAP;
     }
     if (new_cap < v->cap){
-        int* tmp = realloc(v->buf, new_cap * sizeof(int));
+        token* tmp = realloc(v->buf, new_cap * sizeof(token));
         if (tmp == NULL){
             return;
         }
@@ -48,7 +48,7 @@ static void decrease_buf(int_vec *v){
     }
 }
 
-bool set_size(int_vec *v, int new_size){
+bool tkn_set_size(token_vec *v, int new_size){
     if (new_size <= v->cap){
         v->size = new_size;
         decrease_buf(v);
@@ -63,7 +63,7 @@ bool set_size(int_vec *v, int new_size){
     }
     // больше чем 1 элемент, increase не гарантирует, что всё влезет
     int new_cap = new_size;
-    int *tmp = realloc(v->buf, new_cap * sizeof(int));
+    token *tmp = realloc(v->buf, new_cap * sizeof(token));
     if (tmp == NULL){
         return false;
     }
@@ -80,22 +80,22 @@ bool set_size(int_vec *v, int new_size){
     return true;
 }
 
-int_vec init(){
-    int_vec v;
+token_vec tkn_init(){
+    token_vec v;
     v.cap = MIN_CAP;
     v.head = 0;
     v.size = 0;
-    v.buf = malloc(v.cap * sizeof(int));
+    v.buf = malloc(v.cap * sizeof(token));
     return v;
 }
 
-void destroy(int_vec* v){
+void tkn_destroy(token_vec* v){
     v->size = 0;
     v->head = -1;
     free(v->buf);
 }
 
-bool push_back(int_vec *v, int val){
+bool tkn_push_back(token_vec *v, token val){
     if (!increase_buf(v)){
         return false;
     }
@@ -104,7 +104,7 @@ bool push_back(int_vec *v, int val){
     return true;
 }
 
-bool push_front(int_vec *v, int val){
+bool tkn_push_front(token_vec *v, token val){
     if (!increase_buf(v)){
         return false;
     }
@@ -114,33 +114,33 @@ bool push_front(int_vec *v, int val){
     return true;
 }
 
-int pop_back(int_vec *v){
-    int res = v->buf[(v->head + v->size - 1) % v->cap];
+token tkn_pop_back(token_vec *v){
+    token res = v->buf[(v->head + v->size - 1) % v->cap];
     v->size--;
     decrease_buf(v);
     return res;
 }
 
-int pop_front(int_vec *v){
-    int res = v->buf[v->head];
+token tkn_pop_front(token_vec *v){
+    token res = v->buf[v->head];
     v->size--;
     v->head = (v->head + 1) % v->cap;
     decrease_buf(v);
     return res;
 }
 
-bool is_empty(int_vec *v){
+bool tkn_is_empty(token_vec *v){
     return v->size == 0;
 }
 
-int get_size(int_vec *v){
+int tkn_get_size(token_vec *v){
     return v->size;
 }
 
-int get_el(int_vec *v, int idx){
+token tkn_get_el(token_vec *v, int idx){
     return v->buf[(v->head + idx) % v->cap];
 }
 
-void set_el(int_vec *v, int idx, int val){
+void tkn_set_el(token_vec *v, int idx, token val){
     v->buf[(v->head + idx) % v->cap] = val;
 }
