@@ -3,7 +3,7 @@
 #include "headers/token_vec.h"
 #include "headers/tree_stack.h"
 #include <stdio.h>
-#include <ctype.h>
+#include <string.h>
 
 bool is_operator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
@@ -180,6 +180,36 @@ tree postfix_to_tree(token_vec* list) {
     return t;
 }
 
+int _num_of_vars(tree expr, token_vec* v) {
+    int vars = 0;
+    if (is_empty_tree(expr)) {
+        return vars;
+    }
+    if (root_val(expr).type == TOKEN_VAR_NAME) {
+        bool is_repeat = false;
+        for (int i = 0; i < tkn_get_size(v); i++) {
+            token t = tkn_get_el(v, i);
+            if (strcmp(root_val(expr).var_name, t.var_name) == 0) {
+                is_repeat = true;
+            }
+        }
+        if (!is_repeat) {
+            vars++;
+            tkn_push_back(v, root_val(expr));
+        }
+    }
+    vars += _num_of_vars(left(expr), v);
+    vars += _num_of_vars(right(expr), v);
+    return vars;
+}
+
+int num_of_vars(tree expr) {
+    token_vec v = tkn_init();
+    int n = _num_of_vars(expr, &v);
+    tkn_destroy(&v);
+    return n;
+}
+
 int main() {
     token_vec input = tkn_init();
     if (read_expr(&input) == EXPR_READ_ERROR) {
@@ -191,5 +221,6 @@ int main() {
     print_vec(&list);
     tree expr_t = postfix_to_tree(&list);
     print_tree(expr_t);
+    printf("Number of vars: %d\n", num_of_vars(expr_t));
     return 0;
 }
