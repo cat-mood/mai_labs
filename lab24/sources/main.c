@@ -158,14 +158,19 @@ token_vec make_postfix(token_vec* v) {
     return list;
 }
 
-tree postfix_to_tree(int_vec* post) {
+tree postfix_to_tree(token_vec* list) {
     if (is_empty(post)) {
         return empty_tree();
     }
-    int root = pop_back(post);
-    tree right = postfix_to_tree(post);
-    tree left = postfix_to_tree(post);
-    return build_tree(root, left, right);
+    token_vec valstack = tkn_init();
+    for (int i = 0; i < tkn_get_size(list); i++) {
+        token t = get_el(list, i);
+        if (t.type == TOKEN_OPER) {
+
+        } else {
+            
+        }
+    }
 }
 
 int main() {
