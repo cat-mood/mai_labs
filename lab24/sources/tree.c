@@ -10,7 +10,7 @@ tree empty_tree(){
     return NULL;
 }
 
-tree build_tree(int val, tree l, tree r){
+tree build_tree(token val, tree l, tree r){
     tree t = malloc(sizeof(node));
     t->val = val;
     t->left = l;
@@ -18,7 +18,7 @@ tree build_tree(int val, tree l, tree r){
     return t;
 }
 
-int root_val(tree t){
+token root_val(tree t){
     return t->val;
 }
 
@@ -34,6 +34,20 @@ void destroy_root(tree t){
     free(t);
 }
 
+static void print_token(token t) {
+    if (t.type == TOKEN_VAR_NAME) {
+        printf("%s", t.var_name);
+    } else if (t.type == TOKEN_CONST) {
+        printf("%lf", t.cnst);
+    } else if (t.type == TOKEN_OPER) {
+        printf("%c", t.oper);
+    } else if (t.type == TOKEN_BR_L) {
+        printf("(");
+    } else if (t.type == TOKEN_BR_R) {
+        printf(")");
+    }
+}
+
 static void _print_tree(tree root, int n) {
     if (root == NULL) {
         return;
@@ -42,7 +56,8 @@ static void _print_tree(tree root, int n) {
     for (int i = 0; i < n; i++) {
         printf("\t");
     }
-    printf("%s\n", root->val);
+    print_token(root->val);
+    printf("\n");
     _print_tree(root->left, n + 1);
 }
 

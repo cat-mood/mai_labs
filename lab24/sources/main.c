@@ -1,7 +1,7 @@
-#include "headers/int_vec.h"
 #include "headers/tree.h"
 #include "headers/expression.h"
 #include "headers/token_vec.h"
+#include "headers/tree_stack.h"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -159,18 +159,25 @@ token_vec make_postfix(token_vec* v) {
 }
 
 tree postfix_to_tree(token_vec* list) {
-    if (is_empty(post)) {
+    if (tkn_is_empty(list)) {
         return empty_tree();
     }
-    token_vec valstack = tkn_init();
+    tree_stack valstack;
+    ts_init(&valstack);
     for (int i = 0; i < tkn_get_size(list); i++) {
-        token t = get_el(list, i);
+        token t = tkn_get_el(list, i);
         if (t.type == TOKEN_OPER) {
-
+            tree r = ts_pop(&valstack);
+            tree l = ts_pop(&valstack);
+            ts_push(&valstack, build_tree(t, l, r));
         } else {
-            
+            tree tr = build_tree(t, empty_tree(), empty_tree());
+            ts_push(&valstack, tr);
         }
     }
+    tree t = ts_pop(&valstack);
+    ts_destroy(&valstack);
+    return t;
 }
 
 int main() {
@@ -182,5 +189,7 @@ int main() {
     print_vec(&input);
     token_vec list = make_postfix(&input);
     print_vec(&list);
+    tree expr_t = postfix_to_tree(&list);
+    print_tree(expr_t);
     return 0;
 }
